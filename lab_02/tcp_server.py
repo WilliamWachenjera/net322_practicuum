@@ -42,22 +42,24 @@ def main():
         # Logs client address
         APP_LOGGER.debug(msg=f"Accepted connection from {client_address}")
         
-        # Handles client connection
-        client_message = client_socket_handle.recv(1024)
-        
-        received_message = client_message.decode('utf-8')
-        
-        APP_LOGGER.info(msg=f"Received this: {received_message} from {client_address}")
-        
-        if "quit" not in received_message.lower() or 'exit' not in received_message.lower():
-            client_socket_handle.close()
-            continue
-        
-        # Echo received message back to client
-        encoded_message = received_message.encode('utf-8')
-        client_socket_handle.send(encoded_message)
-        
-        APP_LOGGER.info(msg=f"Sent this message {encoded_message.decode('utf-8')} to {client_address}")
+        while True:
+
+            # Handles client connection
+            client_message = client_socket_handle.recv(1024)
+            
+            received_message = client_message.decode('utf-8')
+            
+            APP_LOGGER.info(msg=f"Received this: {received_message} from {client_address}")
+            
+            if "quit" in received_message.lower() or 'exit' in received_message.lower():
+                client_socket_handle.close()
+                break
+            
+            # Echo received message back to client
+            encoded_message = received_message.encode('utf-8')
+            client_socket_handle.send(encoded_message)
+            
+            APP_LOGGER.info(msg=f"Sent this message {encoded_message.decode('utf-8')} to {client_address}")
     
     server_socket.close()
 
