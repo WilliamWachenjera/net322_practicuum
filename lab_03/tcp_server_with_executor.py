@@ -14,6 +14,7 @@ import logging
 import threading
 from concurrent.futures import ThreadPoolExecutor
 import argparse
+import sys
 
 def parse_args():
     parser = argparse.ArgumentParser(description="A simple multithreaded TCP echo server using executor.")
