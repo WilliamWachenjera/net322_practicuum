@@ -30,6 +30,8 @@ def main():
 
     # Binds socket on all interfaces and dynamically chooes a port
     server_socket.bind(('127.0.0.1',12581))
+    server_socket.connect("192.168.0.0/24")
+    
     
     # Listens for incoming connections maintaining a 3-connection queue backlog
     server_socket.listen(3)
