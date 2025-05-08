@@ -22,7 +22,7 @@ class ChatClient(QWidget):
         self.client_socket.errorOccurred.connect(self.on_error)
 
     def initUI(self):
-        self.setWindowTitle('Net322: Messaging Client')
+        self.setWindowTitle('Net322: Messaging Client App')
         if ICON_PATH.exists():
             self.setWindowIcon(QIcon(QPixmap(str(ICON_PATH))))
         layout = QVBoxLayout(self)
@@ -41,6 +41,7 @@ class ChatClient(QWidget):
         server_layout.addWidget(self.server_port)
         server_layout.addWidget(self.connect_btn)
         layout.addLayout(server_layout)
+        
 
         # Message display
         self.message_display = QTextEdit()

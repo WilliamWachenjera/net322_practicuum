@@ -5,26 +5,26 @@ from datetime import datetime
 
 class ChatServer:
     def __init__(self):
-        self.clients: List[asyncio.StreamWriter] = []
-        self.message_history: List[Tuple[str, str, datetime]] = []  # (client_hash, message, timestamp)
+        self.clients  : List[asyncio.StreamWriter] = []
+        self.message_history : List[Tuple[str, str, datetime]] = []  # (client_hash, message, timestamp)
         self.lock = asyncio.Lock()
-        self.client_names: Dict[str, str] = {}  # client_hash -> display name
+        self.client_names : Dict[str, str] = {}  # client_hash -> display name
     
     async def handle_client(self, reader: asyncio.StreamReader, writer: asyncio.StreamWriter):
         addr = writer.get_extra_info('peername')
         ip, port = addr
-        client_hash = hashlib.sha1(f"{ip}:{port}".encode()).hexdigest()[:8]
+        client_hash = hashlib.sha1(f"{ip} : {port}".encode()).hexdigest()[:8]
         
         async with self.lock:
             self.clients.append(writer)
             # Send welcome message and history to new client
-            welcome_msg = f"Welcome to the chat! Your ID: {client_hash}\n"
+            welcome_msg = f"Welcome to the chat! Your ID: {client_hash}\nEnter close() or quit() or exit() to close the connection!"
             writer.write(welcome_msg.encode())
             await writer.drain()
             
-            # Send message history
+            # Send message exchange history
             if self.message_history:
-                history_header = "\n--- Message History ---\n"
+                history_header = "\n---Start of Message History ---\n"
                 writer.write(history_header.encode())
                 for hash_, msg, timestamp in self.message_history:
                     display_name = self.client_names.get(hash_, hash_)
@@ -47,7 +47,7 @@ class ChatServer:
                     if not message:
                         continue
                         
-                    if message.lower() in ("quit", "close", "exit"):
+                    if message.lower() in ("quit()", "close()", "exit()"):
                         print(f"Client {client_hash} requested disconnection!")
                         break
                     
@@ -101,7 +101,7 @@ class ChatServer:
             self.handle_client, host, port
         )
         
-        print(f"Server running on {host}:{port}")
+        print(f"Server running on {host} : {port}")
         print("Press Ctrl+C to stop the server")
         
         async with server:
